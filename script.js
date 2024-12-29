@@ -1,11 +1,55 @@
+const container = document.querySelector("#container");
+
+const gameHeading = document.querySelector("h1");
+
+const resultDiv = document.createElement("div");
+const scoreBoard = document.createElement("span");
+const msgBoard = document.createElement("div");
+
+const rockBtn = document.createElement("button");
+const paperBtn = document.createElement("button");
+const scissorBtn = document.createElement("button");
+
+container.style.width = "500px";
+container.style.height = "500px";
+container.style["background-color"] = "green";
+container.style.margin = "auto";
+container.style["text-align"] = "center";
+
+gameHeading.style["padding-top"] = "20px";
+
+scoreBoard.style["font-size"] = "32px";
+resultDiv.appendChild(scoreBoard);
+
+msgBoard.style["font-size"] = "22px";
+resultDiv.appendChild(msgBoard);
+container.appendChild(resultDiv);
+
+rockBtn.textContent = "Rock";
+rockBtn.value = "rock";
+rockBtn.style.margin = "10px"
+container.appendChild(rockBtn);
+
+paperBtn.textContent = "Paper";
+paperBtn.value = "paper";
+paperBtn.style.margin = "10px"
+container.appendChild(paperBtn);
+
+scissorBtn.textContent = "Scissor";
+scissorBtn.value = "scissor";
+scissorBtn.style.margin = "10px"
+container.appendChild(scissorBtn);
+
+
+
+
+
+
 function playGame() {
 
     // Initialize computer and human score variables
     let computerScore = 0
     let humanScore = 0
-
-    // Initialize invalid input flag for user
-    let invalidFlag = false
 
     // function to get computer choice using random number from 1 to 3
     function getComputerChoice() {
@@ -29,69 +73,66 @@ function playGame() {
         }
     }
 
-    // function to get input from user
-    function getHumanChoice() {
-
-        // Get user input
-        let choice = prompt("Type Rock, Paper and Scissor, \n *if you put invalid input you are Disqualified")
-
-        // return user input in lowercase
-        return choice.toLowerCase()
+    function resetGame() {
+        computerScore = 0;
+        humanScore = 0;
     }
+
+    function checkWinner() {
+        // if human score is 5, print human won
+        if(humanScore == 5) {
+            scoreBoard.textContent =`Congratulation!! you WON!!! \n computer score: ${computerScore} \n your score: ${humanScore}`
+            resetGame()
+        } 
+        // if computer score is 5, print computer won
+        if(computerScore == 5) {
+            scoreBoard.textContent =`Out of Luck!! Computer WON!!! \n computer score: ${computerScore} \n your score: ${humanScore}`
+            resetGame()
+        }
+    }
+
 
     // function to check round winner
     function playRound(computerChoice, humanChoice) {
 
         // if computer choice is equal to human choice, print round is tie
         if( computerChoice === humanChoice ) {
-            alert(`It's Tie, both of you choose ${computerChoice}`)
+            scoreBoard.textContent =`computer score: ${computerScore} \n your score: ${humanScore}`
+            msgBoard.textContent =`It's Tie, both of you choose ${computerChoice}`
         }
 
         // if comupter choice and human choice are (rock, paper) or (paper, scissor) or (scissor, rock), print round winner is human 
-        else if ( computerChoice === "rock" && humanChoice === "paper" || computerChoice === "paper" && humanChoice === "scissor" || computerChoice === "scissor" && humanChoice === "rock" ) {
+        if ( computerChoice === "rock" && humanChoice === "paper" || computerChoice === "paper" && humanChoice === "scissor" || computerChoice === "scissor" && humanChoice === "rock" ) {
             humanScore += 1
-            alert(`You won, ${humanChoice} beats ${computerChoice}`)
+            scoreBoard.textContent =`computer score: ${computerScore} \n your score: ${humanScore}`
+            msgBoard.textContent =`You won, ${humanChoice} beats ${computerChoice}`
+
         }  
 
          // if human choice and computer choice are (rock, paper) or (paper, scissor) or (scissor, rock), print round winner is computer 
-        else if ( humanChoice === "rock" && computerChoice === "paper" || humanChoice === "paper" && computerChoice === "scissor" || humanChoice === "scissor" && computerChoice === "rock" ) {
+        if ( humanChoice === "rock" && computerChoice === "paper" || humanChoice === "paper" && computerChoice === "scissor" || humanChoice === "scissor" && computerChoice === "rock" ) {
             computerScore += 1
-            alert(`You lost, ${computerChoice} beats ${humanChoice}`)
-
-        // if Input is invalid turn invalid flag on
-        } else {
-            invalidFlag = true
-        }
+            scoreBoard.textContent =`computer score: ${computerScore} \n your score: ${humanScore}`
+            msgBoard.textContent =`You lost, ${computerChoice} beats ${humanChoice}`
+        } 
+        checkWinner();
     }
 
-    // loop Round 1 to 5 
-    for (i = 1; i <= 5; i++) {
+    scoreBoard.textContent =`computer score: ${computerScore} \n your score: ${humanScore}`
+    msgBoard.textContent =`The game is about to Start`;
 
-        alert(`Round: ${i} \n computer score: ${computerScore} \n your score: ${humanScore}`)
+    // start the round with computer choice and human choice
+    rockBtn.addEventListener('click', () => {
+        playRound(getComputerChoice(),rockBtn.value)
+    })
 
-        // start the round with computer choice and human choice
-        playRound(getComputerChoice(), getHumanChoice());
+    paperBtn.addEventListener('click', () => {
+        playRound(getComputerChoice(),paperBtn.value)
+    })
 
-        // if invalid flag is true, break the loop
-        if(invalidFlag) break;
-    }
-
-    // if invalid flag is true, print disqaulified
-    if(invalidFlag) {
-        alert(`Disqualified!!! Due to invalid input`)
-    } 
-    // if computer score is less than human score, print human won
-    else if(computerScore < humanScore) {
-        alert(`Congratulation!! you WON!!! \n computer score: ${computerScore} \n your score: ${humanScore}`)
-    } 
-    // if computer score is greater than human score, print computer won
-    else if(computerScore > humanScore) {
-        alert(`Out of Luck!! Computer WON!!! \n computer score: ${computerScore} \n your score: ${humanScore}`)
-    }
-    // if computer and human score is same, print tie
-    else {
-        alert(`Game is Tie!!! \n computer score: ${computerScore} \n your score: ${humanScore}`)
-    }
+    scissorBtn.addEventListener('click', () => {
+        playRound(getComputerChoice(),scissorBtn.value)
+    })
 }
 
 // start the game
